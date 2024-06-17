@@ -5,7 +5,7 @@ from pyzbar import pyzbar
 import shutil
 
 
-image_name = "image2"
+image_name = "image3"
 UPSCALE_FACTOR = 2
 
 # Name of the outpu directory
@@ -57,7 +57,7 @@ for contour in contours:
     # Check if the contour is at least 40 pixels by 10 pixels
     if w >= 40 and h >= 10:
         # Draw the bounding box on the original image
-        cv.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cv.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
         # Extract the region of interest (ROI) from the copy of the original image
         roi = img_copy[y:y+h, x:x+w]
@@ -81,7 +81,7 @@ for contour in contours:
 
                 # Draw barcode data on the image
                 barcode_text = f"{barcode_data}"
-                cv.putText(img, barcode_text, (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv.putText(img, barcode_text, (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
                 # If barcode detected, save with barcode name
                 roi_filename = os.path.join(output_dir, f"{barcode_data}.jpg")
