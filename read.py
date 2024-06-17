@@ -4,6 +4,11 @@ import os
 from pyzbar import pyzbar
 import shutil
 
+
+image_name = "image2"
+UPSCALE_FACTOR = 2
+
+# Name of the outpu directory
 output_dir = "output_tracking_numbers"
 
 # Remove the existing output_tracking_numbers directory if it exists
@@ -14,7 +19,7 @@ if os.path.exists(output_dir):
 os.makedirs(output_dir)
 
 # Load the image
-img_path = "images/image3.jpg"
+img_path = "images/" + image_name + ".jpg"
 img = cv.imread(img_path)
 
 # Check if the image is loaded successfully
@@ -61,7 +66,7 @@ for contour in contours:
         gray_roi = cv.cvtColor(roi, cv.COLOR_BGR2GRAY)
 
         # Upscale the ROI using bilinear interpolation
-        upscale_factor = 2  # You can change this factor as needed
+        upscale_factor = UPSCALE_FACTOR  # You can change this factor as needed
         roi_upscaled = cv.resize(gray_roi, None, fx=upscale_factor, fy=upscale_factor, interpolation=cv.INTER_LINEAR)       
 
         # Save the upscaled ROI as a separate image
