@@ -14,11 +14,15 @@ if os.path.exists(output_dir):
 os.makedirs(output_dir)
 
 # Load the image
-img = cv.imread("images/image2.jpg")
+img_path = "images/image3.jpg"
+img = cv.imread("images/image3.jpg")
 
 # Check if the image is loaded successfully
 if img is None:
     raise Exception("Image not loaded.")
+
+# Printing the image currently being scanned
+print("\nScanning: " + img_path.split('/')[1] + "\n")
 
 # Create a copy of the original image to use for ROI extraction
 img_copy = img.copy()
@@ -36,7 +40,10 @@ mask = cv.inRange(hsv, lower_yellow, upper_yellow)
 # Find contours in the mask
 contours, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
+success = 0
+fail = 0
 index = 0
+
 # Loop over the contours to draw bounding boxes and scan barcodes
 for contour in contours:
     # Get the bounding box for each contour
@@ -53,7 +60,7 @@ for contour in contours:
         gray_roi = cv.cvtColor(roi, cv.COLOR_BGR2GRAY)
 
         # Upscale the ROI using bilinear interpolation
-        upscale_factor = 4  # You can change this factor as needed
+        upscale_factor = 2  # You can change this factor as needed
         roi_upscaled = cv.resize(gray_roi, None, fx=upscale_factor, fy=upscale_factor, interpolation=cv.INTER_LINEAR)
 
         # Save the upscaled ROI as a separate image
@@ -64,22 +71,39 @@ for contour in contours:
         if barcodes:
             for barcode in barcodes:
                 barcode_data = barcode.data.decode("utf-8")
-                print(f"barcode: {barcode_data}")
+                print(f"Tracking number {index+1}: \033[1;32m{barcode_data}\033[0m")
 
                 # Draw barcode data on the image
                 barcode_text = f"{barcode_data}"
                 cv.putText(img, barcode_text, (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
                 # If barcode detected, save with barcode name
                 roi_filename = os.path.join(output_dir, f"{barcode_data}.jpg")
+
+                success += 1
         else:
             cv.putText(img, f"Tracking number {index + 1}", (x-100, y-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            print(f"Tracking number {index+1}: \033[1;31m--------\033[0m")
+
+            fail += 1
         
         cv.imwrite(roi_filename, roi_upscaled)
 
         index += 1
 
+# Calculate the success rate
+print("")
+if fail == 0:
+    print("Success rate: \033[1;32m100%\033[0m")
+elif success == 0:
+    print("Success rate: \033[1;31m0%\033[0m")
+else:
+    success_rate = "{:.1f}".format(float(success) / float(success + fail) * 100)
+    print(f"Success rate: \033[1;33m{success_rate}%\033[0m")
+print("")
+
 # Save the original image with bounding boxes and text
-annotated_img_filename = os.path.join(output_dir, "annotated_image.jpg")
+annotated_img_filename = os.path.join(output_dir, "__Scanned image.jpg")
 cv.imwrite(annotated_img_filename, img)
 
 # Display the original image with bounding boxes and text
