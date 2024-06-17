@@ -15,13 +15,13 @@ os.makedirs(output_dir)
 
 # Load the image
 img_path = "images/image3.jpg"
-img = cv.imread("images/image3.jpg")
+img = cv.imread(img_path)
 
 # Check if the image is loaded successfully
 if img is None:
     raise Exception("Image not loaded.")
 
-# Printing the image currently being scanned
+# Print the image currently being scanned
 print("\nScanning: " + img_path.split('/')[1] + "\n")
 
 # Create a copy of the original image to use for ROI extraction
@@ -48,6 +48,7 @@ index = 0
 for contour in contours:
     # Get the bounding box for each contour
     x, y, w, h = cv.boundingRect(contour)
+    
     # Check if the contour is at least 40 pixels by 10 pixels
     if w >= 40 and h >= 10:
         # Draw the bounding box on the original image
