@@ -62,7 +62,7 @@ for contour in contours:
 
         # Upscale the ROI using bilinear interpolation
         upscale_factor = 2  # You can change this factor as needed
-        roi_upscaled = cv.resize(gray_roi, None, fx=upscale_factor, fy=upscale_factor, interpolation=cv.INTER_LINEAR)
+        roi_upscaled = cv.resize(gray_roi, None, fx=upscale_factor, fy=upscale_factor, interpolation=cv.INTER_LINEAR)       
 
         # Save the upscaled ROI as a separate image
         roi_filename = os.path.join(output_dir, f"Tracking number {index + 1}.jpg")
@@ -92,16 +92,14 @@ for contour in contours:
 
         index += 1
 
-# Calculate the success rate
-print("")
+# Calculate and print the success rate
 if fail == 0:
-    print("Success rate: \033[1;32m100%\033[0m")
+    print("\nSuccess rate: \033[1;32m100%\033[0m\n")
 elif success == 0:
-    print("Success rate: \033[1;31m0%\033[0m")
+    print("\nSuccess rate: \033[1;31m0%\033[0m\n")
 else:
     success_rate = "{:.1f}".format(float(success) / float(success + fail) * 100)
-    print(f"Success rate: \033[1;33m{success_rate}%\033[0m")
-print("")
+    print(f"\nSuccess rate: \033[1;33m{success_rate}%\033[0m\n")
 
 # Save the original image with bounding boxes and text
 annotated_img_filename = os.path.join(output_dir, "__Scanned image.jpg")
